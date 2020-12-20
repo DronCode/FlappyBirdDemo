@@ -9,9 +9,9 @@
 #include "ObstacleController.h"
 #include "GamePhysicsWorldContactProcessor.h"
 #include "GameplaySession.h"
-
-#include "SafeAreaTrigger.h" //TODO: Remove after debug
-#include "Obstacle.h" //TODO: Remove after debug
+#include "GameResultDialog.h"
+#include "GameFinishedEvent.h"
+#include "oxygine-flow.h"
 
 constexpr int kVelocityIterations = 6;
 constexpr int kPositionIterations = 2;
@@ -223,16 +223,20 @@ void Game::switchToState(GameState state) {
                 assert(false); //Unable to jump info IDLE state, game is already in IDLE state after start
                 break;
             case GameState::PLAYING:
-                //TODO: Show label with game score and hide label with text "Press (space) to start challenge"
                 _welcomeLabel->detach();
                 _scoreLabel->attachTo(this);
                 GameplaySession::getSession().resetScore();
                 _obstacleController->start();
                 break;
             case GameState::FINISHED:
+            {
                 _scoreLabel->detach();
                 _obstacleController->stop();
-                break;
+
+                GameFinishedEvent event(GameplaySession::getSession().getScore(), GameplaySession::getSession().getTopScore());
+                dispatchEvent(&event);
+            }
+            break;
         }
 
         _state = state;

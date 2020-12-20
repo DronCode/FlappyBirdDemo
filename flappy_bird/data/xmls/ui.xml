@@ -5,6 +5,7 @@
 		<image file="play.png" />
 		<image file="menu.png" />
 		<image file="bg.png" />
+		<image id="generic_button" file="button.png" />
 	</atlas>
 
 	<set path = "fonts" />

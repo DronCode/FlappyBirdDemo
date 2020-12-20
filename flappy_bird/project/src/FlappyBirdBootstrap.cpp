@@ -7,6 +7,7 @@
 #include "GameMenu.h"
 #include "ResFontFT.h"
 #include "FlappyBirdBootstrap.h"
+#include "GameResultDialog.h"
 
 using namespace oxygine;
 
@@ -30,6 +31,7 @@ void FlappyBirdBootstrap::init()
     GameMenu::instance = new GameMenu;
     GameScene::instance = new GameScene;
     MainMenuScene::instance = new MainMenuScene;
+    GameResultDialog::instance = new GameResultDialog;
 
     //show main menu
     flow::show(MainMenuScene::instance);
@@ -47,6 +49,7 @@ void FlappyBirdBootstrap::destroy()
     MainMenuScene::instance = nullptr;
     GameScene::instance = nullptr;
     GameMenu::instance = nullptr;
+    GameResultDialog::instance = nullptr;
 
     res::free();
 	ResFontFT::freeLibrary();

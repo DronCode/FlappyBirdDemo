@@ -15,7 +15,10 @@ public:
 
 private:
     void onKeyEvent(Event* ev);
-    int _leaveFromSceneEventId;
+    void onGameFinished(Event* ev);
+    void releaseGameInstance();
 
+private:
+    int _leaveFromSceneEventId;
     spGame _game;
 };

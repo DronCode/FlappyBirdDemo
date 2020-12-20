@@ -65,6 +65,10 @@ set(SOURCES
 	${SRC}/SafeAreaTrigger.cpp
 	${SRC}/GameplaySession.h
 	${SRC}/GameplaySession.cpp
+	${SRC}/GameResultDialog.h
+	${SRC}/GameResultDialog.cpp
+	${SRC}/GameFinishedEvent.h
+	${SRC}/GameFinishedEvent.cpp
 	${SRC}/Random.hpp
 )
 

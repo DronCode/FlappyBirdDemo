@@ -6,7 +6,10 @@
 */
 #include "ox/oxygine.hpp"
 #include "ox/Stage.hpp"
+
+#ifdef OX_DEBUG
 #include "ox/DebugActor.hpp"
+#endif
 
 #include "FlappyBirdBootstrap.h"
 
@@ -62,8 +65,10 @@ void run()
     Point size = core::getDisplaySize();
     getStage()->setSize(size);
 
+#ifdef OX_DEBUG
     // DebugActor is a helper actor node. It shows FPS, memory usage and other useful stuff
     DebugActor::show();
+#endif
 
     // Initializes our example game
     FlappyBirdBootstrap::init();
