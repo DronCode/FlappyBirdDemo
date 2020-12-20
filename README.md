@@ -1,7 +1,15 @@
 Flappy Bird Game
 =================
 
-It's just a demo. 
+Description
+-----------
+
+`It's just a demo game.`
+
+CI status
+---------
+
+[![Build status](https://ci.appveyor.com/api/projects/status/roum4p326855okuy/branch/main?svg=true)](https://ci.appveyor.com/project/DronCode/FlappyBirdDemo/branch/main)
 
 Build instructions (PC, x86)
 -----------------------
