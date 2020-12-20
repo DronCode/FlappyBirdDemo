@@ -33,9 +33,9 @@ build:
 build_script: |
   cmake --build . --config Release
 after_build:
-  - cmd: cd c:\projects\FlappyBird\project\proj.cmake\build
+  - cmd: cd c:\projects\FlappyBird\flappy_bird\project\proj.cmake\build
   - cmd: 7z a FlappyBird.zip Release
-  - cmd: mv FlappyBird.zip ../../../FlappyBird.zip
+  - cmd: mv FlappyBird.zip ../../../../FlappyBird.zip
 
 #---------------------------------#
 #      artifacts configuration    #
