@@ -19,9 +19,6 @@ before_build:
       cd libs/oxygine-framework/
       git apply ../../patches/oxygine_python3_support.patch
       cd ../../
-      cd libs/oxygine-flow
-      git apply ../../patches/oxygine_flow_support_callbacks.patch
-      cd ../..
       pip install pillow
       cd flappy_bird
       ./gen-atlasses.bat

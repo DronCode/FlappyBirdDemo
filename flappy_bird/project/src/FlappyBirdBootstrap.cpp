@@ -44,9 +44,9 @@ void FlappyBirdBootstrap::update()
 
 void FlappyBirdBootstrap::destroy()
 {
-    MainMenuScene::instance = 0;
-    GameScene::instance = 0;
-    GameMenu::instance = 0;
+    MainMenuScene::instance = nullptr;
+    GameScene::instance = nullptr;
+    GameMenu::instance = nullptr;
 
     res::free();
 	ResFontFT::freeLibrary();

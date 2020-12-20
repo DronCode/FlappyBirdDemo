@@ -18,13 +18,6 @@ git apply ../../patches/oxygine_python3_support.patch
 cd ../..
 ```
 
-And we must apply the patch for `oxygine-flow` (support callback when scene showed/hidden):
-```
-cd libs/oxygine-flow
-git apply ../../patches/oxygine_flow_support_callbacks.patch
-cd ../..
-```
-
 And install python dependencies via PIP:
 ```
 pip install pillow

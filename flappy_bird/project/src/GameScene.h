@@ -11,7 +11,7 @@ public:
     static spGameScene instance;
     GameScene();
 
-    void onShow() override;
+    void init();
 
 private:
     void onKeyEvent(Event* ev);

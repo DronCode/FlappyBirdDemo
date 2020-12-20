@@ -2,8 +2,11 @@
 
 #include "oxygine-framework.h"
 #include "box2d/box2d.h"
-#include "Box2DDebugDraw.h"
 #include "GlobalSettings.h"
+
+#ifdef OX_DEBUG
+#include "Box2DDebugDraw.h"
+#endif
 
 #include <list>
 
@@ -49,11 +52,13 @@ protected:
     spTextField                         _welcomeLabel;
     spPlayer                            _player;
     spDeadZone                          _deadZone;
-    spBox2DDraw                         _phyDebugDraw;
     spObstacleController                _obstacleController;
     spPhysicsBasedActor                 _topLockArea;
 
     // Physics
+#ifdef OX_DEBUG
+    spBox2DDraw                         _phyDebugDraw;
+#endif
     GamePhysicsWorldContactProcessor*   _phyWorldContactProcessor;
     b2Vec2                              _phyGravity { 0.f,  Settings::kGravity };
     b2World*                            _phyWorld { nullptr };

@@ -22,12 +22,12 @@ Game::Game() {
 Game::~Game() {
     delete _phyWorldContactProcessor;
     _phyWorldContactProcessor = nullptr;
-
+#ifdef OX_DEBUG
     if (_phyDebugDraw) {
         _phyDebugDraw->detach();
         _phyDebugDraw = nullptr;
     }
-
+#endif
     delete _phyWorld;
     _phyWorld = nullptr;
 }
@@ -39,12 +39,13 @@ void Game::init()
     _phyWorldContactProcessor = new GamePhysicsWorldContactProcessor();
     _phyWorld->SetContactListener(_phyWorldContactProcessor);
 
-    //TODO: Show only by request?
+#ifdef OX_DEBUG
     _phyDebugDraw = new Box2DDraw();
     _phyDebugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
     _phyDebugDraw->attachTo(this);
     _phyDebugDraw->setWorld(Settings::kScale, _phyWorld);
     _phyDebugDraw->setPriority(1);
+#endif
 
     //scene layer would have size of display
     const auto stageSize = getStage()->getSize();

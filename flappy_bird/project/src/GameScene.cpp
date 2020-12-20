@@ -11,7 +11,8 @@ GameScene::GameScene()
     setName("GameScene");
 }
 
-void GameScene::onShow() {
+void GameScene::init()
+{
     _game = new Game;
     _game->init();
     _game->attachTo(_view);
@@ -25,8 +26,10 @@ void GameScene::onKeyEvent(Event* ev)
     auto keyEvent = reinterpret_cast<KeyEvent*>(ev);
     switch (keyEvent->data->keysym.scancode) {
         case SDL_SCANCODE_ESCAPE:
-            Scene::finish();
+            _game->detach();
+            _game = nullptr;
             getStage()->removeEventListener(_leaveFromSceneEventId);
+            Scene::finish();
             break;
         case SDL_SCANCODE_SPACE:
             _game->sendPlayerImpulse();
