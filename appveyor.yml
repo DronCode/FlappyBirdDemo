@@ -23,8 +23,6 @@ before_build:
       mkdir build
       cd build
       cmake -A Win32 -G "Visual Studio 16 2019" ..
-      cmake --build . --config Release
-      cp -R ../../../data/* Release/
 
 build:
   parallel: true
@@ -32,7 +30,9 @@ build:
 
 build_script: |
   cmake --build . --config Release
+
 after_build:
+  - cmd: cp -R ../../../data/* Release/
   - cmd: cd c:\projects\FlappyBird\flappy_bird\project\proj.cmake\build
   - cmd: 7z a FlappyBird.zip Release
   - cmd: mv FlappyBird.zip ../../../../FlappyBird.zip
