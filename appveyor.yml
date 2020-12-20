@@ -18,7 +18,7 @@ before_build:
   - cmd: |
       pip install pillow
       cd flappy_bird
-      python ./gen-atlasses.bat
+      gen-atlasses.bat
       cd project/proj.cmake
       mkdir build
       cd build
