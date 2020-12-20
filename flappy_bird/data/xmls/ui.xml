@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<resources>
+	<set path = "../images/ui" />
+	<atlas>
+		<image file="play.png" />
+		<image file="menu.png" />
+		<image file="bg.png" />
+	</atlas>
+
+	<set path = "fonts" />
+	<font file="normal.fnt"/>
+	<font id="big" file="huge.fnt"/>
+	<ftfont id="main" file="verdana.ttf" />
+
+
+	<set path = "../images" />
+	<atlas>
+		<image id="sky" file="background.png" />
+		<image id="player" file="player.png"/>
+		<image id="obstacle" file="obstacle.png"/>
+		<image id="obstacle_bottom" file="obstacle_bottom.png"/>
+	</atlas>
+</resources>

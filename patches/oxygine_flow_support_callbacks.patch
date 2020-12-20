@@ -1,0 +1,36 @@
+diff --git a/src/flow/Scene.h b/src/flow/Scene.h
+index d5b2345..ecc9029 100644
+--- a/src/flow/Scene.h
++++ b/src/flow/Scene.h
+@@ -118,6 +118,9 @@ namespace oxygine
+ 
+             void listenForAllSceneEvents(const EventCallback &cb);
+ 
++            virtual void onShow() {}
++            virtual void onHide() {}
++
+         protected:
+ 
+             friend class Flow;
+diff --git a/src/flow/flow.cpp b/src/flow/flow.cpp
+index 3522bae..c93558e 100644
+--- a/src/flow/flow.cpp
++++ b/src/flow/flow.cpp
+@@ -95,6 +95,8 @@ namespace oxygine
+             scene->_resultCB = cb;
+             scenes2show.push_back(scene);
+ 
++            scene->onShow();
++
+             checkShow();
+         }
+ 
+@@ -131,6 +133,8 @@ namespace oxygine
+             {
+                 scenes2show.erase(it);
+             }
++
++            scene->onHide();
+         }
+ 
+         void Flow::lockBlockedTouches()

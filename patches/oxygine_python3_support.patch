@@ -1,0 +1,15 @@
+diff --git a/tools/oxyresbuild.py b/tools/oxyresbuild.py
+index c992c32a..3e192229 100644
+--- a/tools/oxyresbuild.py
++++ b/tools/oxyresbuild.py
+@@ -103,8 +103,8 @@ def process(values):
+ if __name__ == "__main__":
+     parser = get_parser()
+ 
+-    dt = time.clock()
++    dt = time.process_time()
+     do(parser.parse_args())
+-    dt = time.clock() - dt
++    dt = time.process_time() - dt
+ 
+     # print("total time: " + str(dt))

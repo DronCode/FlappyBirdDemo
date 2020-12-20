@@ -1,0 +1,52 @@
+platform: x86
+
+branches:
+  only:
+    - main
+
+clone_folder: c:\projects\FlappyBird
+
+configuration: Release
+
+image:
+  - Visual Studio 2019
+
+install:
+  - git submodule update --init --recursive
+
+before_build:
+  - cmd: |
+      cd libs/oxygine-framework/
+      git apply ../../patches/oxygine_python3_support.patch
+      cd ../../
+      cd libs/oxygine-flow
+      git apply ../../patches/oxygine_flow_support_callbacks.patch
+      cd ../..
+      pip install pillow
+      cd flappy_bird
+      ./gen-atlasses.bat
+      cd project/proj.cmake
+      mkdir build
+      cd build
+      cmake -A Win32 -G "Visual Studio 16 2019" ..
+      cmake --build . --config Release
+      cp -R ../../../data/* Release/
+
+build:
+  parallel: true
+  verbosity: normal
+
+build_script: |
+  cmake --build . --config Release
+after_build:
+  - cmd: cd c:\projects\FlappyBird\project\proj.cmake\build
+  - cmd: 7z a FlappyBird.zip Release
+  - cmd: mv FlappyBird.zip ../../../FlappyBird.zip
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  - path: FlappyBird.zip
+    name: FlappyBird
