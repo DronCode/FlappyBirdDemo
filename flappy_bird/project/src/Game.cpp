@@ -13,6 +13,8 @@
 #include "GameFinishedEvent.h"
 #include "oxygine-flow.h"
 
+#include "oxygine/actor/DebugActor.h"
+
 constexpr int kVelocityIterations = 6;
 constexpr int kPositionIterations = 2;
 
@@ -34,12 +36,27 @@ Game::~Game() {
 
 void Game::init()
 {
+    if (_phyWorld) {
+        delete _phyWorld;
+        _phyWorld = nullptr;
+    }
     _phyWorld = new b2World { _phyGravity };
 
+    if (_phyWorldContactProcessor) {
+        delete _phyWorldContactProcessor;
+        _phyWorldContactProcessor = nullptr;
+    }
     _phyWorldContactProcessor = new GamePhysicsWorldContactProcessor();
     _phyWorld->SetContactListener(_phyWorldContactProcessor);
 
+    _state = GameState::IDLE;
+    _playerLastScore = 0;
+
 #ifdef OX_DEBUG
+    if (_phyDebugDraw) {
+        _phyDebugDraw->detach();
+        _phyDebugDraw = nullptr;
+    }
     _phyDebugDraw = new Box2DDraw();
     _phyDebugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_pairBit | b2Draw::e_centerOfMassBit);
     _phyDebugDraw->attachTo(this);
@@ -53,14 +70,22 @@ void Game::init()
 
     //create background
     {
-        spSprite sky = new Sprite;
-        sky->setResAnim(res::ui.getResAnim("sky"));
-        sky->attachTo(this);
-        sky->setSize(getStage()->getSize());
+        if (_sky) {
+            _sky->detach();
+            _sky = nullptr;
+        }
+        _sky = new Sprite;
+        _sky->setResAnim(res::ui.getResAnim("sky"));
+        _sky->attachTo(this);
+        _sky->setSize(getStage()->getSize());
     }
 
     //create separate layer for elements virtual joystick and other UI in future
     {
+        if (_ui) {
+            _ui->detach();
+            _ui = nullptr;
+        }
         _ui = new Actor;
         _ui->attachTo(this);
         //it would be higher than other actors with default priority = 0
@@ -69,6 +94,10 @@ void Game::init()
 
     //create score label
     {
+        if (_scoreLabel) {
+            _scoreLabel->detach();
+            _scoreLabel = nullptr;
+        }
         _scoreLabel = new TextField();
         _scoreLabel->setFont(res::ui.getResFont("main"));
         _scoreLabel->setPriority(4);
@@ -82,6 +111,10 @@ void Game::init()
 
     //create welcome label
     {
+        if (_welcomeLabel) {
+            _welcomeLabel->detach();
+            _welcomeLabel = nullptr;
+        }
         _welcomeLabel = new TextField();
         _welcomeLabel->attachTo(this);
         _welcomeLabel->setPriority(4);
@@ -98,6 +131,10 @@ void Game::init()
 
     // PLAYER
     {
+        if (_player) {
+            _player->detach();
+            _player = nullptr;
+        }
         _player = new Player(_phyWorld);
         _player->attachTo(this);
         _player->setPriority(2);
@@ -109,6 +146,10 @@ void Game::init()
 
     // DEAD ZONE
     {
+        if (_deadZone) {
+            _deadZone->detach();
+            _deadZone = nullptr;
+        }
         _deadZone = new DeadZone(_phyWorld);
         _deadZone->attachTo(this);
         _deadZone->setPriority(1);
@@ -119,6 +160,10 @@ void Game::init()
 
     // LOCK AREA (Prohibit to fly to our of area)
     {
+        if (_topLockArea) {
+            _topLockArea->detach();
+            _topLockArea = nullptr;
+        }
         _topLockArea = new PhysicsBasedActor(_phyWorld, { 0.f, 0.f }, 1.f, b2_staticBody);
         _topLockArea->attachTo(this);
         _topLockArea->setPriority(1);
@@ -130,16 +175,34 @@ void Game::init()
 
     // OBSTACLE CONTROLLER
     {
+        if (_obstacleController) {
+            _obstacleController->detach();
+            _obstacleController = nullptr;
+        }
         _obstacleController = new ObstacleController(_phyWorld);
         _obstacleController->attachTo(this);
         _obstacleController->init();
     }
 }
 
+void Game::fadeOut(const std::function<void()>& onFadeOutCompleted) {
+    constexpr int duration = 450;
+
+    _tweens = _obstacleController->addTween(Actor::TweenAlpha(0), TweenOptions(duration));
+    _tweens->setDoneCallback([onFadeOutCompleted](Event*) {
+        if (onFadeOutCompleted) {
+            onFadeOutCompleted();
+        }
+    });
+}
+
 void Game::doUpdate(const UpdateState& us)
 {
     doPhysicsUpdate();
     updateGameState();
+#ifdef OX_DEBUG
+    updateDebugGameState();
+#endif
 }
 
 void Game::doPhysicsUpdate()
@@ -215,6 +278,38 @@ void Game::updateScoreLabel() {
     std::snprintf(buffer, kBufferSize, "Your score\n%d", score);
     _scoreLabel->setText(buffer);
 }
+
+#ifdef OX_DEBUG
+void Game::updateDebugGameState() {
+    DebugActor::addDebugString("Game::Score is %d", _playerLastScore);
+    std::string stateStr;
+    switch (_state) {
+
+        case GameState::IDLE:
+            stateStr = "GameState::IDLE";
+            break;
+        case GameState::PLAYING:
+            stateStr = "GameState::PLAYING";
+            break;
+        case GameState::FINISHED:
+            stateStr = "GameState::FINISHED";
+            break;
+    }
+    DebugActor::addDebugString("Game::State is %s (%d)", stateStr.data(), _state);
+    DebugActor::addDebugString("Player::Position at (%f;%f)", _player->getPosition().x, _player->getPosition().y);
+
+    std::string playerStateStr;
+    auto playerState = _player->getPlayerState();
+    switch (playerState) {
+        case Player::PlayerState::IDLE: playerStateStr = "PlayerState::IDLE"; break;
+        case Player::PlayerState::JUMPING: playerStateStr = "PlayerState::JUMPING"; break;
+        case Player::PlayerState::FALLING: playerStateStr = "PlayerState::FALLING"; break;
+        case Player::PlayerState::DEAD: playerStateStr = "PlayerState::DEAD"; break;
+        default: playerStateStr = "Unknown"; break;
+    }
+    DebugActor::addDebugString("Player::State %s", playerStateStr.data());
+}
+#endif
 
 void Game::switchToState(GameState state) {
     if (state != _state) {

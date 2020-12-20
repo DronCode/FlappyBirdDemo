@@ -2,7 +2,6 @@
 #include "MainMenuScene.h"
 #include "MyButton.h"
 #include "res.h"
-#include "GameMenu.h"
 #include "GameResultDialog.h"
 #include "GameFinishedEvent.h"
 
@@ -38,26 +37,29 @@ void GameScene::onKeyEvent(Event* ev)
 
 void GameScene::onGameFinished(Event* ev) {
     auto event = reinterpret_cast<GameFinishedEvent*>(ev);
-
-    _game->getClock()->pause();
-
     GameResultDialog::instance->setSessionData(event->score, event->topScore);
 
-    flow::show(GameResultDialog::instance, [=](Event* ev) {
-        _game->getClock()->resume();
-
-        if (ev->target->getName() == GameResultDialog::kExitSession) {
-            finish();
-        }
-        else if (ev->target->getName() == GameResultDialog::kTryAgain) {
-            releaseGameInstance();
-            init();
-        }
-    });
+    _game->fadeOut([this] { onGameFadeOutFinished(); });
 }
 
-void GameScene::releaseGameInstance() {
-    _game->removeEventListener(GameFinishedEvent::GAME_FINISHED_EVENT);
-    _game->detach();
-    _game = nullptr;
+void GameScene::onGameFadeOutFinished() {
+    _game->getClock()->pause();
+
+    flow::show(GameResultDialog::instance, [this](Event* ev) { onGameResultDialogFinished(ev); });
+}
+
+void GameScene::onGameResultDialogFinished(Event* ev) {
+    const auto targetName = ev->target->getName();
+
+    assert(targetName == GameResultDialog::kExitSession || targetName == GameResultDialog::kTryAgain);
+
+    if (targetName == GameResultDialog::kExitSession || targetName == GameResultDialog::kTryAgain) {
+        if (targetName == GameResultDialog::kExitSession) {
+            MainMenuScene::instance->setAutoJoinToGameSession(false);
+        } else if (targetName == GameResultDialog::kTryAgain) {
+            MainMenuScene::instance->setAutoJoinToGameSession(true);
+        }
+
+        GameScene::instance->finish();
+    }
 }

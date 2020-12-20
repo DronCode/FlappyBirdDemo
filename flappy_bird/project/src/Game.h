@@ -33,6 +33,7 @@ public:
     ~Game();
 
     void init();
+    void fadeOut(const std::function<void()>& onFadeOutCompleted);
     void sendPlayerImpulse();
 
 private:
@@ -42,11 +43,16 @@ private:
     void switchToState(GameState state);
     void updateScoreLabel();
 
+#ifdef OX_DEBUG
+    void updateDebugGameState();
+#endif
+
 protected:
     friend class Player;
 
 protected:
     // Entities
+    spSprite                            _sky;
     spActor                             _ui;
     spTextField                         _scoreLabel;
     spTextField                         _welcomeLabel;
@@ -54,12 +60,13 @@ protected:
     spDeadZone                          _deadZone;
     spObstacleController                _obstacleController;
     spPhysicsBasedActor                 _topLockArea;
+    spTween                             _tweens;
 
     // Physics
 #ifdef OX_DEBUG
     spBox2DDraw                         _phyDebugDraw;
 #endif
-    GamePhysicsWorldContactProcessor*   _phyWorldContactProcessor;
+    GamePhysicsWorldContactProcessor*   _phyWorldContactProcessor { nullptr };
     b2Vec2                              _phyGravity { 0.f,  Settings::kGravity };
     b2World*                            _phyWorld { nullptr };
 

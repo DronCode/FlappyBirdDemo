@@ -8,7 +8,6 @@ spGameResultDialog GameResultDialog::instance { nullptr };
 GameResultDialog::GameResultDialog() : MyScene()
 {
     setName("GameResultDialog");
-    _dialog = true;
 
     const auto stageSize = oxygine::getStage()->getSize();
 
@@ -36,8 +35,8 @@ GameResultDialog::GameResultDialog() : MyScene()
     {
         _restartButton = createButton("Restart", "generic_button");
         _restartButton->setPosition((stageSize.x * .5f) - (_restartButton->getSize().x * .5f), 350.f);
-        _restartButton->attachTo(_view);
         _restartButton->setName(GameResultDialog::kTryAgain);
+        _restartButton->attachTo(_view);
         _restartButton->addEventListener(oxygine::TouchEvent::TOUCH_UP, getFinish());
     }
 
@@ -45,8 +44,8 @@ GameResultDialog::GameResultDialog() : MyScene()
     {
         _quitButton = createButton("Quit", "generic_button");
         _quitButton->setPosition((stageSize.x * .5f) - (_quitButton->getSize().x * .5f), 450.f);
-        _quitButton->attachTo(_view);
         _quitButton->setName(GameResultDialog::kExitSession);
+        _quitButton->attachTo(_view);
         _quitButton->addEventListener(oxygine::TouchEvent::TOUCH_UP, getFinish());
     }
 
@@ -101,6 +100,7 @@ spButton GameResultDialog::createButton(const std::string& text, const std::stri
     label->setSize(button->getSize());
     label->setPosition(label->getPosition().x, label->getPosition().y - (.4f * static_cast<float>(style.fontSize)));
     label->setStyle(style);
+    label->setTouchEnabled(false);
     label->setText(text);
     label->attachTo(button);
 

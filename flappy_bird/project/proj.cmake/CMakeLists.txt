@@ -28,7 +28,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OXYGINE_CXX_FLAGS} ${OXYGINE_FREETYPE_
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/../src)
 set(SOURCES
 	${SRC}/Game.cpp
-	${SRC}/GameMenu.cpp
 	${SRC}/GameScene.cpp
 	${SRC}/MainMenuScene.cpp
 	${SRC}/MyButton.cpp
@@ -38,7 +37,6 @@ set(SOURCES
 	${SRC}/main.cpp
 	${SRC}/res.cpp
 	${SRC}/Game.h
-	${SRC}/GameMenu.h
 	${SRC}/GameScene.h
 	${SRC}/MainMenuScene.h
 	${SRC}/MyButton.h

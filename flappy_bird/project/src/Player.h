@@ -8,7 +8,16 @@
 
 class Player : public PhysicsBasedActor
 {
-    enum class PlayerState;
+#ifdef OX_DEBUG
+public:
+#endif
+    enum class PlayerState {
+        IDLE,           // Waiting for first jump
+        JUMPING,        // Jumped, waiting for cooldown
+        FALLING,        // Falling, waiting for jump or collision
+        DEAD            // Dead, collided with something
+    };
+
 public:
     static constexpr const char* kBodyName = "#PLAYER";
     constexpr static float kImpulseCooldownMs        = 1.5f;
@@ -33,6 +42,10 @@ public:
 
     int getScore() const { return _score; }
 
+#ifdef OX_DEBUG
+    PlayerState getPlayerState() const { return _state; }
+#endif
+
 private:
     void setupPhysicsBodyProperties();
     void updateInternalState(const oxygine::UpdateState& us);
@@ -44,13 +57,6 @@ private:
     oxygine::spSprite _view;
     bool _shouldUpdateImpulseTimeOnNextUpdate { false };
     bool _inObstacleSafeZone { false };
-
-    enum class PlayerState {
-        IDLE,           // Waiting for first jump
-        JUMPING,        // Jumped, waiting for cooldown
-        FALLING,        // Falling, waiting for jump or collision
-        DEAD            // Dead, collided with something
-    };
 
     PlayerState _state { PlayerState::IDLE };
     int _score { 0 };

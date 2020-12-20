@@ -2,11 +2,16 @@
 #include "res.h"
 #include "MyButton.h"
 #include "GameScene.h"
+#include "GameResultDialog.h"
 
 spMainMenuScene MainMenuScene::instance;
 
-MainMenuScene::MainMenuScene()
+MainMenuScene::MainMenuScene() : MyScene()
 {
+}
+
+void MainMenuScene::init() {
+
     setName("MainMenuScene");
     //create background
     spSprite sky = new Sprite;
@@ -39,7 +44,15 @@ MainMenuScene::MainMenuScene()
 
     btn->addEventListener(TouchEvent::CLICK, CLOSURE(this, &MainMenuScene::onEvent));
 
-	addBackHandler(getFinish());
+    addBackHandler(getFinish());
+}
+
+void MainMenuScene::setAutoJoinToGameSession(bool flag) {
+    _autoJoinToGameSession = flag;
+}
+
+bool MainMenuScene::isAutoJoinToGameSessionEnabled() const {
+    return _autoJoinToGameSession;
 }
 
 void MainMenuScene::onEvent(Event* ev)
@@ -56,6 +69,15 @@ void MainMenuScene::onEvent(Event* ev)
         //clicked to play button
         //change scene
         GameScene::instance->init();
-        flow::show(GameScene::instance);
+        flow::show(GameScene::instance,std::bind(&MainMenuScene::onGameSessionFinishedEvent, this, std::placeholders::_1));
+    }
+}
+
+void MainMenuScene::onGameSessionFinishedEvent(Event* event) {
+    if (isAutoJoinToGameSessionEnabled()) {
+        setAutoJoinToGameSession(false);
+
+        GameScene::instance->init();
+        flow::show(GameScene::instance, std::bind(&MainMenuScene::onGameSessionFinishedEvent, this, std::placeholders::_1));
     }
 }

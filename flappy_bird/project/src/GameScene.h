@@ -16,7 +16,8 @@ public:
 private:
     void onKeyEvent(Event* ev);
     void onGameFinished(Event* ev);
-    void releaseGameInstance();
+    void onGameFadeOutFinished();
+    void onGameResultDialogFinished(Event* ev);
 
 private:
     int _leaveFromSceneEventId;

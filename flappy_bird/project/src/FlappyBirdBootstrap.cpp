@@ -4,7 +4,6 @@
 #include "Game.h"
 #include "MainMenuScene.h"
 #include "GameScene.h"
-#include "GameMenu.h"
 #include "ResFontFT.h"
 #include "FlappyBirdBootstrap.h"
 #include "GameResultDialog.h"
@@ -28,13 +27,13 @@ void FlappyBirdBootstrap::init()
 
 	flow::init();
     //create all scenes
-    GameMenu::instance = new GameMenu;
     GameScene::instance = new GameScene;
     MainMenuScene::instance = new MainMenuScene;
     GameResultDialog::instance = new GameResultDialog;
 
     //show main menu
     flow::show(MainMenuScene::instance);
+    MainMenuScene::instance->init();
 }
 
 void FlappyBirdBootstrap::update()
@@ -48,7 +47,6 @@ void FlappyBirdBootstrap::destroy()
 {
     MainMenuScene::instance = nullptr;
     GameScene::instance = nullptr;
-    GameMenu::instance = nullptr;
     GameResultDialog::instance = nullptr;
 
     res::free();
