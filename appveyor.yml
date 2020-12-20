@@ -16,12 +16,9 @@ install:
 
 before_build:
   - cmd: |
-      cd libs/oxygine-framework/
-      git apply ../../patches/oxygine_python3_support.patch
-      cd ../../
       pip install pillow
       cd flappy_bird
-      python3 ./gen-atlasses.bat
+      python ./gen-atlasses.bat
       cd project/proj.cmake
       mkdir build
       cd build
